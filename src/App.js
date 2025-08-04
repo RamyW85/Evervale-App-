@@ -436,6 +436,12 @@ const mockEscoFunnels = [
     }
 ];
 
+const mockAuditReports = [
+    { id: 'AUD001', fileName: 'Energy_Audit_Villa12.pdf', buildingName: 'Villa 12, Arabian Ranches', dateUploaded: '2024-07-28', status: 'Approved' },
+    { id: 'AUD002', fileName: 'HVAC_Assessment_DH_TowerA.pdf', buildingName: 'Dubai Hills Tower A', dateUploaded: '2024-07-25', status: 'Approved' },
+    { id: 'AUD003', fileName: 'Initial_Walkthrough_Springs_C5.pdf', buildingName: 'Community 5, The Springs', dateUploaded: '2024-08-01', status: 'Pending Review' },
+];
+
 // =================================================================================
 // --- 4. LAYOUT & COMMON COMPONENTS ---
 // Reusable UI elements that form the application's shell.
@@ -2559,6 +2565,18 @@ const B2BPartners = () => {
     );
 };
 
+const StatusBadge = ({ status }) => {
+    const statusClasses = {
+        'Approved': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+        'Pending Review': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+    };
+    return (
+        <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusClasses[status] || 'bg-gray-100 text-gray-800'}`}>
+            {status}
+        </span>
+    );
+};
+
 const B2BVendorPortal = () => {
     const [activeTab, setActiveTab] = useState('audit');
 
@@ -2574,7 +2592,43 @@ const B2BVendorPortal = () => {
     const renderTabContent = () => {
         switch (activeTab) {
             case 'audit':
-                return <p>Energy Auditing & Baseline Establishment content goes here.</p>;
+                return (
+                    <div>
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-xl font-bold">Energy Audit Reports</h3>
+                            <button className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center">
+                                <Icon path={<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>} className="h-5 w-5 mr-2" />
+                                Upload Report
+                            </button>
+                        </div>
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left">
+                                <thead className="border-b dark:border-gray-700">
+                                    <tr>
+                                        <th className="p-3">File Name</th>
+                                        <th className="p-3">Building</th>
+                                        <th className="p-3">Date Uploaded</th>
+                                        <th className="p-3">Status</th>
+                                        <th className="p-3">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {mockAuditReports.map((report) => (
+                                        <tr key={report.id} className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                                            <td className="p-3 font-medium">{report.fileName}</td>
+                                            <td className="p-3">{report.buildingName}</td>
+                                            <td className="p-3">{report.dateUploaded}</td>
+                                            <td className="p-3"><StatusBadge status={report.status} /></td>
+                                            <td className="p-3">
+                                                <button className="text-blue-500 hover:underline font-semibold text-sm">View</button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                );
             case 'planning':
                 return <p>Retrofit Planning & Phasing content goes here.</p>;
             case 'installation':
